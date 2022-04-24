@@ -1,0 +1,65 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.chrono.HijrahDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
+import java.sql.Time;
+import java.time.*;
+import java.time.chrono.*;
+import java.util.Arrays;
+import java.util.Calendar;
+
+class MuharramMonthStartEnd {
+    
+    public static String MuharramMonthStartDate(int inputYear) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        // Gregorian date
+        LocalDate localDate = LocalDate.of(inputYear + 1, 1,1);
+
+        // Convert Gregorian to Hijrah to get Muharram start date
+        //ChronoLocalDate startDate = Chronology.of("Hijrah-umalqura").date(localDate).with(TemporalAdjusters.firstDayOfYear());
+        HijrahDate startDate = HijrahChronology.INSTANCE.date(localDate).with(TemporalAdjusters.firstDayOfYear());
+
+        // Convert Hijrah back to Gregorian
+        //ChronoLocalDate result = Chronology.of("ISO").date(startDate);
+        LocalDate result = LocalDate.from(startDate);
+
+        return formatter.format(result);
+    }
+
+    public static String MuharramMonthEndDate(int inputYear, String stringMuharramStart) {
+        //Write the code here
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        // Gregorian date
+        LocalDate date = LocalDate.parse(stringMuharramStart, formatter);
+
+        // Convert Gregorian to Hijrah
+        HijrahDate endDate = HijrahChronology.INSTANCE.date(date).with(TemporalAdjusters.lastDayOfMonth());
+
+        // Convert back Gregorian to Hijrah
+        //ChronoLocalDate endDate = Chronology.of("Hijrah-umalqura").date(date).with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate res = LocalDate.from(endDate);
+
+        // Convert Hijrah back tto Gregorian
+        ChronoLocalDate result = Chronology.of("ISO").date(endDate);
+        return formatter.format(res);
+    }
+}
+
+public class MuharramMonth {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int inputYear = Integer.parseInt(br.readLine().trim());
+		br.close();
+		String result = MuharramMonthStartEnd.MuharramMonthStartDate(inputYear);
+		System.out.println("Start Of Muharram Month : " + result);
+		String result1 = MuharramMonthStartEnd.MuharramMonthEndDate(inputYear, result);
+		System.out.println("End Of Muharram Month   : " + result1);
+	}
+}
